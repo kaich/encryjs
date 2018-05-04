@@ -14,9 +14,12 @@ if(!program.args.length) {
     program.help();
 } else {
     console.log(program.file);   
+    var file = program.file
+    var varName = program.var
+    var password = program.password
 }
 
-function encryFile(filePath, varName) {
+function encryFile(filePath, varName, pwd) {
     fs = require('fs');
     fs.readFile(filePath, 'utf8', function (err,data) {
         if (err) {
@@ -25,15 +28,19 @@ function encryFile(filePath, varName) {
 
         eval(data)
         var varValue = eval(varName)
-        var finalResult 
+        var finalResult = ''
         if (varValue instanceof Array) {
+            var ary = []
             for(emObj of varValue) {
-                
+                ary.push(encrpyt(emObj, pwd))
             }
+            finalResult = JSON.stringify(myArray);
         }
         else if((varValue instanceof Object)) {
-            encrpyt(data)
+            finalResult =  encrpyt(data, pwd)
         }
+
+        s.writeFileSync('./data.epjs',  , 'utf-8'); 
     });
 }
 
