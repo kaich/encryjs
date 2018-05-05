@@ -8,18 +8,21 @@ program
     .option('-f, --file [path]', 'encrpyt file')
     .option('-v, --var [name]', 'var name')
     .option('-p, --password [password]', 'encrypt password')
+    .option('-o, --output [file]', 'output file path')
     .parse(process.argv);
 
-if(!program.args.length) {
+    console.log(program.file);   
+if(!program.file) {
     program.help();
 } else {
-    console.log(program.file);   
     var file = program.file
     var varName = program.var
     var password = program.password
+    var output = program.output
+    encryFile(file,varName,password,output)
 }
 
-function encryFile(filePath, varName, pwd) {
+function encryFile(filePath, varName, pwd, output) {
     fs = require('fs');
     fs.readFile(filePath, 'utf8', function (err,data) {
         if (err) {
@@ -34,13 +37,20 @@ function encryFile(filePath, varName, pwd) {
             for(emObj of varValue) {
                 ary.push(encrpyt(emObj, pwd))
             }
-            finalResult = JSON.stringify(myArray);
+            finalResult = JSON.stringify(ary);
         }
         else if((varValue instanceof Object)) {
             finalResult =  encrpyt(data, pwd)
         }
 
-        s.writeFileSync('./data.epjs',  , 'utf-8'); 
+        finalResult = "var " + varName + " = " + finalResult
+
+        var finalOutput = output 
+        if(!output) {
+            finalOutput = filePath + "ep" 
+        }
+        fs.writeFileSync(finalOutput, finalResult , 'utf-8'); 
+
     });
 }
 
